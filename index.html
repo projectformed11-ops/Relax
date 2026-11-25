@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>พื้นที่ผ่อนคลายจิตใจ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* 60-30-10 : ครีม 60% / ชมพู 30% / น้ำตาล 10% (จุดเด่น) */
+  --cream:#fcf7d9; --pink:#f6d8d6; --brown:#604734;
+  --bg:var(--cream); --surface:var(--cream); --text:var(--brown); --muted:rgba(96,71,52,.72); --line:rgba(96,71,52,.22);
+  --blue:var(--pink); --green:var(--pink); --orange:var(--pink); --lav:var(--pink);
+  --accent:var(--brown); --accent-text:var(--cream); --orb:var(--pink); --orb2:var(--cream);
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans Thai","Sarabun",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.65;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:760px;margin:0 auto;padding:24px 18px 48px}
+.view{display:none}
+.view.active{display:block}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+
+/* Main */
+.hero{padding:28px 4px 22px}
+.hero h1{font-size:clamp(1.7rem,6vw,2.3rem);line-height:1.3;margin:0 0 8px;font-weight:700}
+.hero p{margin:0;color:var(--muted);font-size:1.05rem;max-width:34em}
+.grid{display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:560px){.grid{grid-template-columns:1fr 1fr}}
+.card{border:0;border-radius:26px;padding:24px 22px;text-align:left;min-height:170px;display:flex;flex-direction:column;gap:6px;transition:transform .18s ease}
+.card:active{transform:scale(.97)}
+.card .ico{font-size:2.4rem;line-height:1;margin-bottom:8px}
+.card h2{margin:0;font-size:1.25rem;font-weight:700}
+.card .en{font-size:.85rem;color:var(--muted)}
+.card p{margin:4px 0 0;font-size:.98rem;color:var(--text);opacity:.85}
+.c1{background:var(--blue)}.c2{background:var(--green)}.c3{background:var(--orange)}.c4{background:var(--lav)}
+.foot{margin-top:28px;padding:16px 18px;border-radius:18px;background:var(--surface);border:1px solid var(--line);color:var(--muted);font-size:.92rem}
+
+/* Tool shell */
+.top{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.back{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:10px 18px;font-weight:600;min-height:44px}
+.tool-title{font-size:1.25rem;font-weight:700;margin:0}
+.panel{border-radius:28px;padding:26px 20px;background:var(--surface);border:1px solid var(--line)}
+.lead{color:var(--muted);margin:0 0 18px}
+.btn{border:0;border-radius:999px;background:var(--accent);color:var(--accent-text);font-weight:600;padding:14px 28px;min-height:48px;font-size:1.05rem}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.soft{background:var(--blue);color:var(--text)}
+.row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:8px}
+.chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:9px 16px;min-height:44px}
+.chip[aria-pressed="true"]{background:var(--blue);border-color:transparent;font-weight:600}
+
+/* Breathing */
+.stage{display:grid;place-items:center;height:290px;margin:6px 0 10px}
+.orb{border:3px solid var(--accent);width:230px;height:230px;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--orb2),var(--orb));transform:scale(.6);transition:transform 1s ease-in-out;display:grid;place-items:center;text-align:center}
+.orb b{display:block;font-size:1.3rem}
+.orb span{font-size:2rem;font-weight:700}
+.cycles{text-align:center;color:var(--muted);margin:0 0 16px;min-height:1.6em}
+
+/* Grounding */
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin-bottom:20px}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .4s}
+.big{font-size:4rem;font-weight:700;line-height:1;text-align:center;margin:0}
+.gh{text-align:center;font-size:1.3rem;font-weight:700;margin:6px 0 4px}
+.dots{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:22px 0}
+.dot{width:58px;height:58px;border-radius:50%;border:2px dashed var(--accent);background:transparent;font-size:1.2rem;font-weight:600}
+.dot[aria-pressed="true"]{background:var(--green);border-style:solid}
+
+/* Vent */
+.field{position:relative}
+textarea{width:100%;min-height:220px;border-radius:20px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;padding:16px;resize:vertical;line-height:1.7}
+.ghost{position:absolute;inset:0;padding:17px;white-space:pre-wrap;word-break:break-word;overflow:hidden;pointer-events:none;opacity:0;line-height:1.7}
+.ghost.go{animation:fade 3.6s ease-in forwards}
+@keyframes fade{0%{opacity:1;filter:blur(0);transform:translateY(0)}100%{opacity:0;filter:blur(14px);transform:translateY(-40px)}}
+.msg{min-height:3.2em;text-align:center;color:var(--muted);margin:16px 0}
+
+/* Quotes */
+.qbox{background:var(--lav);border-radius:22px;padding:26px 20px;text-align:center;min-height:150px;display:grid;place-items:center;font-size:1.2rem;font-weight:500;margin-bottom:16px}
+.qbox small{display:block;margin-top:10px;font-size:.9rem;color:var(--muted);font-weight:400}
+.tbox{background:var(--orange);border-radius:22px;padding:22px 20px;text-align:center;margin-top:22px}
+.tbox h3{margin:0 0 6px}
+.timer{font-size:2.4rem;font-weight:700;margin:8px 0}
+
+.sound{margin:4px auto 18px;padding:14px 16px;border-radius:20px;background:var(--green);max-width:440px}
+.sound label{display:flex;align-items:center;gap:10px;justify-content:center;margin-top:10px;font-size:.95rem}
+.sound input[type=range]{flex:1;max-width:220px;accent-color:var(--accent)}
+.alert{display:none;margin:14px 0 0;padding:18px;border-radius:20px;background:var(--orange);border:2px solid var(--accent)}
+.alert.on{display:block}
+.alert h3{margin:0 0 6px}
+.alert p{margin:0 0 10px}
+.alert a{display:block;text-align:center;text-decoration:none;font-weight:700;padding:13px;border-radius:16px;background:var(--surface);color:var(--text);margin-top:8px;border:1px solid var(--line);min-height:48px}
+.char{font-size:5rem;line-height:1;text-align:center;animation:bob 2.4s ease-in-out infinite}
+.cname{text-align:center;color:var(--muted);font-size:.9rem;margin:2px 0 14px}
+.c5{background:var(--pink)}
+@media(min-width:560px){.c5{grid-column:1/-1;min-height:140px}}
+.gwrap{border-radius:24px;overflow:hidden;background:var(--blue);margin:8px 0}
+.gwrap canvas{display:block;width:100%;height:380px;touch-action:none}
+.cards{display:flex;gap:10px;justify-content:center;margin-bottom:10px}
+.fcard{perspective:800px;border:0;background:none;padding:0;flex:1;max-width:210px;aspect-ratio:3/4;cursor:pointer}
+.fin{position:relative;display:block;width:100%;height:100%;transition:transform .7s;transform-style:preserve-3d}
+.fcard.open .fin{transform:rotateY(180deg)}
+.ff{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;text-align:center}
+.fb{background:var(--lav);font-size:3.4rem;border:2px dashed var(--accent)}
+.fr{background:var(--orange);transform:rotateY(180deg);font-size:.9rem;line-height:1.5;gap:6px}
+.fr i{font-style:normal;font-size:2rem}
+.cards.picked .fcard:not(.open){display:none}
+.cards.picked .fcard.open{max-width:360px;aspect-ratio:auto;height:320px}
+.fcard.open .fr{font-size:1.08rem;line-height:1.7;padding:20px 22px;font-weight:500}
+.fcard.open .fr i{font-size:3rem}
+@media (prefers-reduced-motion:reduce){.fin{transition:none}}
+.swatch{height:130px;border-radius:24px;display:grid;place-items:center;font-size:2rem;border:1px solid var(--line);margin-bottom:12px}
+.stage[hidden],.posebox[hidden]{display:none}
+.posebox{text-align:center;min-height:290px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;margin:6px 0 10px;padding:16px;border-radius:24px;background:var(--blue)}
+.fig{width:min(180px,50vw);height:auto}
+.lim{stroke:var(--accent);stroke-width:9;stroke-linecap:round;fill:none}
+.hd{fill:var(--surface);stroke:var(--accent);stroke-width:4}
+.face{stroke:var(--text);stroke-width:2.5;stroke-linecap:round;fill:none}
+.posebox h3{margin:6px 0 0;font-size:1.35rem}
+.posebox p{margin:0;max-width:26em}
+.pcount{font-size:2rem;font-weight:700;margin-top:8px}
+.pstep{font-size:.9rem;color:var(--muted);min-height:1.4em}
+.qbox{position:relative}
+.qbox::before{content:"";position:absolute;top:-10px;left:50%;margin-left:-10px;border:10px solid transparent;border-top:0;border-bottom-color:var(--lav)}
+@keyframes bob{50%{transform:translateY(-8px)}}
+@media (prefers-reduced-motion:reduce){.card,.orb,.bar i{transition:none}.char{animation:none}.ghost.go{animation-duration:.01s}}
+
+/* เพิ่มสัดส่วนสีน้ำตาล */
+.c2,.c4{background:var(--brown);color:var(--cream)}
+.c2 .en,.c4 .en{color:rgba(252,247,217,.78)}
+.c2 p,.c4 p{color:var(--cream);opacity:.92}
+.foot{background:var(--brown);border-color:var(--brown);color:var(--cream)}
+.back{background:var(--brown);border-color:var(--brown);color:var(--cream)}
+.panel{border:2px solid var(--brown)}
+.tbox{background:var(--brown);color:var(--cream)}
+.tbox .btn{background:var(--cream);color:var(--brown)}
+.tbox .btn.soft{background:var(--pink);color:var(--brown)}
+.fb{background:var(--brown);border-color:var(--cream);outline:2px solid var(--brown)}
+.fcard.open .fr{border:3px solid var(--brown)}
+.btn.soft{border:2px solid var(--brown)}
+.hero h1{color:var(--brown)}
+.hero{border-bottom:4px solid var(--brown);margin-bottom:18px;padding-bottom:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- MAIN -->
+<section class="view active" id="main">
+  <div class="hero">
+    <h1>พื้นที่ผ่อนคลายจิตใจ<br>(Relaxation Zone)</h1>
+    <p>ยินดีต้อนรับนะ ตอนนี้ไม่ต้องรีบไปไหน เลือกสิ่งที่อยากทำกับใจตัวเองสักอย่างได้เลย</p>
+  </div>
+  <div class="grid">
+    <button class="card c1" data-go="breath"><span class="ico">🌬️</span><h2>ฝึกหายใจผ่อนคลาย</h2><span class="en">Guided Breathing</span><p>ช่วยลดความตื่นตระหนก และทำให้ใจค่อย ๆ นิ่งลง</p></button>
+    <button class="card c2" data-go="ground"><span class="ico">🌿</span><h2>ดึงสติอยู่กับปัจจุบัน</h2><span class="en">Color &amp; Object Hunt</span><p>ช่วยลดอาการฟุ้งซ่านและใจลอย</p></button>
+    <button class="card c3" data-go="vent"><span class="ico">☁️</span><h2>พื้นที่ระบายใจ</h2><span class="en">Quick Vent</span><p>พิมพ์ความเครียดออกมา แล้วปล่อยให้จางหายไป</p></button>
+    <button class="card c4" data-go="quote"><span class="ico">💌</span><h2>กล่องข้อความชาร์จพลัง</h2><span class="en">Mindful Quotes &amp; Tasks</span><p>สุ่มข้อความฮีลใจ และภารกิจเล็ก ๆ 2 นาที</p></button>
+    <button class="card c5" data-go="game"><span class="ico">🎈</span><h2>เกมคลายเครียด</h2><span class="en">Stress-Relief Games</span><p>เกมเบา ๆ ไม่มีแพ้ชนะ ไม่มีคะแนนมากดดัน เล่นแล้วใจโล่งขึ้น</p></button>
+  </div>
+  <div class="foot">หากรู้สึกว่าหนักเกินกว่าจะรับไหว ไม่ต้องอยู่คนเดียวนะ โทรสายด่วนสุขภาพจิต <b>1323</b> ได้ตลอด 24 ชั่วโมง หรือเรียกบริการแพทย์ฉุกเฉิน <b>1669</b> หากอยู่ในอันตราย</div>
+</section>
+
+<!-- BREATHING -->
+<section class="view" id="breath">
+  <div class="top"><button class="back" data-go="main">← ย้อนกลับ</button><h2 class="tool-title">ฝึกหายใจผ่อนคลาย</h2></div>
+  <div class="panel">
+    <p class="lead" style="text-align:center">นั่งในท่าที่สบาย แล้วหายใจตามวงกลม</p>
+    <div class="chips" id="pats"></div>
+    <div class="stage" id="stage"><div class="orb" id="orb"><div><b id="blabel">พร้อมเมื่อคุณพร้อม</b><span id="bcount"></span></div></div></div>
+    <div class="posebox" id="posebox" hidden><div class="pstep" id="pstep"></div><svg class="fig" id="fig" viewBox="0 0 200 250" aria-hidden="true"></svg><h3 id="ptitle">พร้อมเมื่อคุณพร้อม</h3><p id="ptext">กด เริ่มหายใจ แล้วทำท่าตามที่แสดงบนหน้าจอ</p><div class="pcount" id="pcount"></div></div>
+    <p class="cycles" id="bcyc"></p>
+    <div class="sound"><div class="chips" id="snds" style="margin:0"></div><label>🔈 <input type="range" id="vol" min="0" max="100" value="50" aria-label="ระดับเสียง"> 🔊</label></div>
+    <div class="row"><button class="btn" id="bbtn">เริ่มหายใจ</button></div>
+  </div>
+</section>
+
+<!-- GROUNDING -->
+<section class="view" id="ground">
+  <div class="top"><button class="back" data-go="main">← ย้อนกลับ</button><h2 class="tool-title">ดึงสติอยู่กับปัจจุบัน</h2></div>
+  <div class="panel">
+    <div class="chips" id="hmodes"></div>
+    <div id="gbody"></div>
+  </div>
+</section>
+
+<!-- VENT -->
+<section class="view" id="vent">
+  <div class="top"><button class="back" data-go="main">← ย้อนกลับ</button><h2 class="tool-title">พื้นที่ระบายใจ</h2></div>
+  <div class="panel">
+    <p class="lead">พิมพ์ทุกอย่างที่อยู่ในใจได้เลย ข้อความนี้ไม่ถูกบันทึกและไม่มีใครเห็น</p>
+    <div class="field">
+      <textarea id="vtext" placeholder="ตอนนี้รู้สึกอย่างไรบ้าง…"></textarea>
+      <div class="ghost" id="vghost"></div>
+    </div>
+    <div class="alert" id="valert" role="alert"><h3>💛 เป็นห่วงคุณนะ</h3><p>ดูเหมือนตอนนี้คุณกำลังเจ็บปวดมาก คุณไม่ต้องรับมือคนเดียว ลองคุยกับใครสักคนตอนนี้ได้เลย</p><a href="tel:1323">📞 สายด่วนสุขภาพจิต 1323 (24 ชั่วโมง)</a><a href="tel:1669">🚑 บริการแพทย์ฉุกเฉิน 1669 (หากอยู่ในอันตราย)</a><p style="margin:12px 0 0">ถ้ามีคนที่ไว้ใจอยู่ใกล้ ๆ ลองบอกให้เขารู้ว่าตอนนี้คุณไม่ไหว</p></div>
+    <p class="msg" id="vmsg"></p>
+    <div class="row"><button class="btn" id="vbtn">ปล่อยให้จางหาย</button></div>
+  </div>
+</section>
+
+<!-- GAME -->
+<section class="view" id="game">
+  <div class="top"><button class="back" data-go="main">← ย้อนกลับ</button><h2 class="tool-title">เกมคลายเครียด</h2></div>
+  <div class="panel">
+    <p class="lead" id="glead" style="text-align:center"></p>
+    <div class="chips" id="gmodes"></div>
+    <div class="gwrap"><canvas id="gcv"></canvas></div>
+    <p class="cycles" id="gcount"></p>
+    <div class="row"><button class="btn soft" id="gsnd">🔈 เสียงเปิด</button></div>
+    <p class="lead" style="text-align:center;font-size:.9rem;margin:16px 0 0">ถ้ารู้สึกหนักเกินไป โทรสายด่วนสุขภาพจิต <b>1323</b> ได้ตลอด 24 ชั่วโมง</p>
+  </div>
+</section>
+
+<!-- QUOTES -->
+<section class="view" id="quote">
+  <div class="top"><button class="back" data-go="main">← ย้อนกลับ</button><h2 class="tool-title">กล่องข้อความชาร์จพลัง</h2></div>
+  <div class="panel">
+    <div class="cards" id="qcards"></div><p class="cycles" id="qhint"></p>
+    
+    <div class="row"><button class="btn soft" id="qbtn">สุ่มการ์ดใบใหม่</button></div>
+    <div class="tbox">
+      <h3>ภารกิจ 2 นาที</h3>
+      <p id="ttext" style="margin:0">กดสุ่มเพื่อรับภารกิจเล็ก ๆ ที่ทำได้ทันที</p>
+      <div class="timer" id="ttime" hidden>2:00</div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn soft" id="tbtn">สุ่มภารกิจ</button>
+        <button class="btn" id="tstart" hidden>เริ่มจับเวลา</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+function show(id){
+  stopBreath();stopTask();stopGame();crisis=false;$('valert').classList.remove('on');
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));
+  window.scrollTo(0,0);
+  if(id==='ground')gInit();
+  if(id==='game')gameStart();
+  if(id==='quote')deal();
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-go]');
+  if(t)show(t.dataset.go);
+});
+
+/* ---------- Breathing ---------- */
+const IDLE={aL:10,eL:0,aR:10,eR:0,hL:6,hR:6,lean:0,tilt:0,dy:0};
+const P=o=>Object.assign({},IDLE,o);
+const PATS={
+  
+  box:{name:'ผ่อนคลาย 4-4-4-4',ph:[['หายใจเข้า',4,1],['กลั้นไว้',4,1],['หายใจออก',4,.6],['พักไว้',4,.6]]},
+  s478:{name:'หลับสบาย 4-7-8',ph:[['หายใจเข้า',4,1],['กลั้นไว้',7,1],['หายใจออก',8,.6]]},
+  pose:{name:'ทำท่าตาม',pose:true,ph:[
+    ['ยืดแขนขึ้นสูง',14,'','หายใจเข้ายกแขนขึ้นสูง หายใจออกลดแขนลง',P({aL:15,aR:15}),P({aL:170,aR:170})],
+    ['กางแขนเปิดอก',14,'','กางแขนออกข้างลำตัวช้า ๆ แล้วพับกลับเข้ามา',P({aL:30,aR:30,eL:60,eR:60}),P({aL:95,aR:95})],
+    ['ก้าวข้างเบา ๆ',16,'','ก้าวเท้าไปด้านข้างสลับซ้ายขวา แกว่งแขนตามสบาย',P({hL:22,hR:0,dy:5,lean:4,aL:40,eL:40,aR:15}),P({hL:0,hR:22,dy:5,lean:-4,aR:40,eR:40,aL:15})],
+    ['เอียงตัวยืดข้าง',16,'','ยกแขนข้างหนึ่ง เอียงตัวยืดข้างลำตัว สลับซ้ายขวา',P({lean:12,aL:165,aR:20}),P({lean:-12,aR:165,aL:20})],
+    ['ย่อตัวเบา ๆ',14,'','ย่อเข่าเบา ๆ แล้วยืนขึ้น ยกแขนตามจังหวะ',P({aL:20,aR:20}),P({dy:10,hL:26,hR:26,aL:55,aR:55,eL:50,eR:50})],
+    ['กอดตัวเอง',14,'','กางแขนออก แล้วโอบกอดตัวเอง หายใจออกยาว ๆ',P({aL:95,aR:95}),P({aL:-25,aR:-25,eL:-131,eR:-131})]
+  ]}
+};
+let cur='box',bt=null,bs=null;
+let mvA=null,mvB=null,curP=Object.assign({},IDLE);
+const fgs={};
+(function(){
+  $('fig').innerHTML='<ellipse cx="100" cy="237" rx="52" ry="6" fill="var(--line)"/><g id="gb"><g id="gll"><line class="lim" x1="0" y1="0" x2="0" y2="92"/></g><g id="glr"><line class="lim" x1="0" y1="0" x2="0" y2="92"/></g><line class="lim" x1="0" y1="0" x2="0" y2="-72"/><g id="gal"><line class="lim" x1="0" y1="0" x2="0" y2="38"/><g id="gel" transform="translate(0 38)"><line class="lim" x1="0" y1="0" x2="0" y2="34"/></g></g><g id="gar"><line class="lim" x1="0" y1="0" x2="0" y2="38"/><g id="ger" transform="translate(0 38)"><line class="lim" x1="0" y1="0" x2="0" y2="34"/></g></g><g id="ghd"><circle class="hd" cx="0" cy="-18" r="16"/><circle cx="-6" cy="-20" r="2" fill="var(--text)"/><circle cx="6" cy="-20" r="2" fill="var(--text)"/><path class="face" d="M-6 -13 Q0 -8 6 -13"/></g></g>';
+  ['gb','gll','glr','gal','gel','gar','ger','ghd'].forEach(i=>fgs[i]=$(i));
+})();
+function renderFig(ts){
+  const t=ts/1000;let g;
+  if(mvA&&bt){const w=(1-Math.cos(2*Math.PI*t/3.2))/2;g={};for(const k in IDLE)g[k]=mvA[k]+(mvB[k]-mvA[k])*w}
+  else{g=Object.assign({},IDLE);g.dy=Math.sin(t*1.2)*1.5}
+  for(const k in IDLE)curP[k]+=(g[k]-curP[k])*0.08;
+  const c=curP;
+  fgs.gb.setAttribute('transform','translate(100 '+(140+c.dy)+') rotate('+c.lean+')');
+  fgs.gll.setAttribute('transform','translate(-9 0) rotate('+c.hL+')');
+  fgs.glr.setAttribute('transform','translate(9 0) rotate('+(-c.hR)+')');
+  fgs.gal.setAttribute('transform','translate(-13 -62) rotate('+c.aL+')');
+  fgs.gel.setAttribute('transform','translate(0 38) rotate('+c.eL+')');
+  fgs.gar.setAttribute('transform','translate(13 -62) rotate('+(-c.aR)+')');
+  fgs.ger.setAttribute('transform','translate(0 38) rotate('+(-c.eR)+')');
+  fgs.ghd.setAttribute('transform','translate(0 -72) rotate('+c.tilt+')');
+}
+function figLoop(ts){
+  if(!$('posebox').hidden&&$('breath').classList.contains('active'))renderFig(ts);
+  requestAnimationFrame(figLoop);
+}
+requestAnimationFrame(figLoop);
+function setMode(){
+  const p=!!PATS[cur].pose;
+  $('stage').hidden=p;$('posebox').hidden=!p;
+  document.querySelector('#breath .lead').textContent=p?'ทำท่าตามที่แสดงบนหน้าจอ ทำเท่าที่สบาย ถ้าเจ็บหรือเวียนหัวให้หยุดได้เลย':'นั่งในท่าที่สบาย แล้วหายใจตามวงกลม';
+}
+const orb=$('orb');
+function drawChips(){
+  $('pats').innerHTML='';
+  Object.keys(PATS).forEach(k=>{
+    const b=document.createElement('button');
+    b.className='chip';b.textContent=PATS[k].name;b.setAttribute('aria-pressed',k===cur);
+    b.onclick=()=>{cur=k;stopBreath();drawChips();setMode()};
+    $('pats').appendChild(b);
+  });
+}
+function phase(){
+  const p=PATS[cur].ph[bs.i];
+  bs.left=p[1];
+  if(PATS[cur].pose){mvA=p[4];mvB=p[5];$('ptitle').textContent=p[0];$('ptext').textContent=p[3];$('pcount').textContent=bs.left;$('pstep').textContent='ท่าที่ '+(bs.i+1)+' จาก '+PATS[cur].ph.length;return}
+  $('blabel').textContent=p[0];$('bcount').textContent=bs.left;
+  orb.style.transitionDuration=p[1]+'s';
+  orb.style.transform='scale('+p[2]+')';
+}
+function startBreath(){
+  bs={i:0,left:0,c:0};phase();
+  bt=setInterval(()=>{
+    bs.left--;
+    if(bs.left<=0){
+      bs.i++;
+      if(bs.i>=PATS[cur].ph.length){bs.i=0;bs.c++;$('bcyc').textContent='ครบ '+bs.c+' รอบแล้ว เก่งมาก'}
+      phase();
+    }else{$('bcount').textContent=bs.left;$('pcount').textContent=bs.left}
+  },1000);
+  $('bbtn').textContent='หยุดพัก';audioStart();
+}
+function stopBreath(){
+  clearInterval(bt);bt=null;
+  orb.style.transitionDuration='1s';orb.style.transform='scale(.6)';
+  $('blabel').textContent='พร้อมเมื่อคุณพร้อม';$('bcount').textContent='';
+  $('bcyc').textContent='';$('bbtn').textContent='เริ่มหายใจ';
+  mvA=mvB=null;$('ptitle').textContent='พร้อมเมื่อคุณพร้อม';$('ptext').textContent='กด เริ่มหายใจ แล้วทำท่าตามที่แสดงบนหน้าจอ';$('pcount').textContent='';$('pstep').textContent='';audioStop();
+}
+$('bbtn').onclick=()=>bt?stopBreath():startBreath();
+drawChips();
+
+/* ---------- Sound (สร้างเสียงในเครื่องด้วย Web Audio) ---------- */
+let ac=null,master=null,nodes=[],chT=null,snd='music';
+const SNDS={off:'ปิดเสียง',music:'ดนตรีบำบัด'};
+let tms=[];
+function drawSnds(){
+  $('snds').innerHTML='';
+  Object.keys(SNDS).forEach(k=>{
+    const b=document.createElement('button');
+    b.className='chip';b.textContent=SNDS[k];b.setAttribute('aria-pressed',k===snd);
+    b.onclick=()=>{snd=k;drawSnds();if(bt){audioStop();audioStart()}};
+    $('snds').appendChild(b);
+  });
+}
+const vol=()=>$('vol').value/100*0.9;
+function pad(){
+  [110,164.81,220,277.18,329.63,493.88].forEach((f,i)=>{
+    const o=ac.createOscillator();o.type='sine';o.frequency.value=f;o.detune.value=i%2?4:-4;
+    const g=ac.createGain();g.gain.value=0.06;
+    const l=ac.createOscillator();l.frequency.value=0.05+i*0.017;
+    const lg=ac.createGain();lg.gain.value=0.045;
+    l.connect(lg);lg.connect(g.gain);o.connect(g);g.connect(master);
+    o.start();l.start();nodes.push(o,l);
+  });
+  chT=setInterval(()=>{
+    const f=[440,493.88,554.37,659.25,739.99,880][Math.floor(Math.random()*6)];
+    const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime;
+    o.frequency.value=f;g.gain.setValueAtTime(0,t);
+    g.gain.linearRampToValueAtTime(0.1,t+0.05);
+    g.gain.exponentialRampToValueAtTime(0.0005,t+5);
+    o.connect(g);g.connect(master);o.start();o.stop(t+5.2);
+  },4500);
+}
+function noiseSrc(){
+  const n=ac.sampleRate*3,buf=ac.createBuffer(1,n,ac.sampleRate),d=buf.getChannelData(0);
+  for(let i=0;i<n;i++)d[i]=Math.random()*2-1;
+  const s=ac.createBufferSource();s.buffer=buf;s.loop=true;s.start();nodes.push(s);return s;
+}
+
+
+
+function audioStart(){
+  if(snd==='off')return;
+  try{
+    ac=ac||new (window.AudioContext||window.webkitAudioContext)();
+    if(ac.state==='suspended')ac.resume();
+    master=ac.createGain();master.gain.value=0;master.connect(ac.destination);
+    master.gain.setTargetAtTime(vol(),ac.currentTime,1.2);
+    if(snd==='music')pad();
+    
+    
+    
+    
+  }catch(e){}
+}
+function audioStop(){
+  clearInterval(chT);chT=null;tms.forEach(clearTimeout);tms=[];
+  if(!master)return;
+  const m=master,ns=nodes;master=null;nodes=[];
+  try{m.gain.setTargetAtTime(0,ac.currentTime,0.4)}catch(e){}
+  setTimeout(()=>{ns.forEach(x=>{try{x.stop()}catch(e){}});try{m.disconnect()}catch(e){}},2000);
+}
+$('vol').oninput=()=>{if(master)master.gain.setTargetAtTime(vol(),ac.currentTime,0.1)};
+drawSnds();
+
+/* ---------- Grounding ---------- */
+/* ---------- Grounding: สุ่มหาสี / สุ่มหาสิ่งของ ---------- */
+const HC=[['แดง','#e5484d','#fff'],['ส้ม','#f5a25d','#3a2a1a'],['เหลือง','#f2cf4b','#3a2a1a'],['เขียว','#5cb87a','#10301c'],['ฟ้า','#6ec1ea','#10303f'],['น้ำเงิน','#4a73d1','#fff'],['ม่วง','#9a73d6','#fff'],['ชมพู','#f29bb7','#3a1a26'],['ขาว','#f4f4f4','#2c3e45'],['ดำ','#2b2b2b','#fff'],['น้ำตาล','#9a6b46','#fff'],['เทา','#9aa5ab','#1f2a2e']];
+const HO=[['แก้วหรือขวดน้ำ','🥤'],['ปากกาหรือดินสอ','✏️'],['หน้าต่างหรือประตู','🚪'],['ต้นไม้หรือใบไม้','🌱'],['นาฬิกา','⏰'],['โทรศัพท์','📱'],['หมอนหรือผ้านุ่ม ๆ','🛋️'],['กุญแจ','🔑'],['หนังสือหรือกระดาษ','📖'],['รองเท้า','👟'],['โคมไฟหรือหลอดไฟ','💡'],['กระจกหรือสิ่งที่สะท้อนแสง','🪞'],['สิ่งของที่เป็นทรงกลม','⚪'],['สิ่งของที่มีตัวเลข','🔢'],['สิ่งของที่ทำจากไม้','🪵']];
+const HM={color:'สุ่มหาสี',obj:'สุ่มหาสิ่งของ'};
+let hmode='color',hlast=-1,hfound=0;
+function drawH(){
+  $('hmodes').innerHTML='';
+  Object.keys(HM).forEach(k=>{
+    const b=document.createElement('button');
+    b.className='chip';b.textContent=HM[k];b.setAttribute('aria-pressed',k===hmode);
+    b.onclick=()=>{hmode=k;hlast=-1;hfound=0;drawH();hRender()};
+    $('hmodes').appendChild(b);
+  });
+}
+function gInit(){hfound=0;drawH();hRender()}
+function hRender(){
+  const isC=hmode==='color',arr=isC?HC:HO,n=isC?3:1;
+  hlast=pick(arr,hlast);const it=arr[hlast];
+  let top;
+  if(isC)top='<div class="swatch" style="background:'+it[1]+';color:'+it[2]+'"><b>'+it[0]+'</b></div><p class="gh">หาสิ่งของสี'+it[0]+' 3 อย่าง</p><p class="lead" style="text-align:center;margin:0">มองไปรอบ ๆ แล้วแตะวงกลมทุกครั้งที่เจอ</p>';
+  else top='<p class="big">'+it[1]+'</p><p class="gh">หา '+it[0]+'</p><p class="lead" style="text-align:center;margin:0">ถ้าเจอแล้ว ลองจับหรือมองให้ละเอียด สังเกตสี รูปร่าง และพื้นผิวของมัน</p>';
+  let d='';for(let i=1;i<=n;i++)d+='<button class="dot" aria-pressed="false" aria-label="เจอแล้ว '+i+'">'+(isC?i:'✓')+'</button>';
+  $('gbody').innerHTML=top+'<div class="dots">'+d+'</div><p class="msg" id="hmsg" style="margin:0 0 12px">'+(hfound?'หาเจอแล้ว '+hfound+' รอบ เก่งมาก':'')+'</p><div class="row"><button class="btn soft" id="hskip">สุ่มใหม่</button><button class="btn" id="hnext" disabled>เจอแล้ว สุ่มต่อ</button></div>';
+  let done=0;
+  $('gbody').querySelectorAll('.dot').forEach(b=>b.onclick=()=>{
+    const on=b.getAttribute('aria-pressed')==='true';
+    b.setAttribute('aria-pressed',!on);done+=on?-1:1;
+    $('hnext').disabled=done<n;
+  });
+  $('hskip').onclick=hRender;
+  $('hnext').onclick=()=>{hfound++;hRender()};
+}
+
+/* ---------- Vent ---------- */
+let vbusy=false,crisis=false;
+const CR=['ฆ่าตัวตาย','ฆ่าตัวเอง','อยากตาย','ขอตาย','ตายไปเลย','ตายดีกว่า','อยากหายไปจากโลก','หายไปจากโลก','ไม่อยากมีชีวิต','ไม่อยากอยู่ต่อ','ไม่อยากอยู่แล้ว','จบชีวิต','ทำร้ายตัวเอง','กรีดข้อมือ','กรีดแขน','กินยาเกินขนาด','ผูกคอ','กระโดดตึก','suicide','suicidal','kill myself','killing myself','want to die','end my life','self harm','self-harm','hurt myself'];
+function isCrisis(s){s=s.toLowerCase().replace(/\s+/g,'');return CR.some(k=>s.includes(k.replace(/\s+/g,'')))}
+function showAlert(){crisis=true;$('valert').classList.add('on')}
+$('vtext').addEventListener('input',e=>{if(isCrisis(e.target.value))showAlert()});
+$('vbtn').onclick=()=>{
+  const t=$('vtext');
+  if(vbusy)return;
+  if(!t.value.trim()){$('vmsg').textContent='ลองพิมพ์อะไรสักอย่างที่อยู่ในใจก่อนนะ';return}
+  vbusy=true;
+  if(isCrisis(t.value)){showAlert();$('valert').scrollIntoView({block:'nearest',behavior:'smooth'})}
+  const g=$('vghost');
+  g.textContent=t.value;t.value='';t.style.visibility='hidden';
+  g.classList.remove('go');void g.offsetWidth;g.classList.add('go');
+  $('vmsg').textContent='';
+  setTimeout(()=>{
+    g.classList.remove('go');g.textContent='';
+    t.style.visibility='visible';vbusy=false;
+    $('vmsg').textContent=crisis?'ขอบคุณที่กล้าบอกความรู้สึกนะ คุณไม่ต้องอยู่กับมันคนเดียว ลองโทรหาสายด่วนด้านบนได้เลย':'ความรู้สึกเหล่านั้นจางหายไปแล้ว คุณทำได้ดีมากที่ปล่อยมันออกมา';
+  },3700);
+};
+
+/* ---------- Games ---------- */
+const GM={bub:{n:'ฟองสบู่ความเครียด',t:'แตะฟองเพื่อปล่อยเรื่องที่กวนใจให้ลอยหายไป'},rip:{n:'ระลอกน้ำ',t:'แตะหรือลากนิ้วบนผืนน้ำ แล้วฟังเสียงเบา ๆ'}};
+const WORDS=['งาน','เงิน','เหนื่อย','กังวล','กดดัน','อดนอน','เรื่องเมื่อวาน','คำพูดคนอื่น','ความผิดพลาด','ฟุ้งซ่าน','ความเครียด','เสียงรบกวน'];
+let gmode='bub',graf=null,gcx=null,gW=0,gH=0,gbubs=[],grips=[],gparts=[],gpop=0,gsndOn=true,gac=null,gcol={},glast=0,gspawn=0,gauto=0,gmv=0;
+function gtone(f,dur,v){
+  if(!gsndOn)return;
+  try{
+    gac=gac||new (window.AudioContext||window.webkitAudioContext)();
+    if(gac.state==='suspended')gac.resume();
+    const t=gac.currentTime,o=gac.createOscillator(),g=gac.createGain();
+    o.type='sine';o.frequency.setValueAtTime(f,t);
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+0.01);g.gain.exponentialRampToValueAtTime(0.0005,t+dur);
+    o.connect(g);g.connect(gac.destination);o.start(t);o.stop(t+dur+0.05);
+  }catch(e){}
+}
+function gResize(){
+  const cv=$('gcv'),r=window.devicePixelRatio||1;
+  gW=cv.clientWidth;gH=cv.clientHeight;cv.width=gW*r;cv.height=gH*r;
+  gcx=cv.getContext('2d');gcx.setTransform(r,0,0,r,0,0);
+}
+function gAddBub(init){
+  const r=40+Math.random()*12;
+  gbubs.push({r:r,x:r+Math.random()*Math.max(1,gW-2*r),y:init?Math.random()*gH:gH+r,v:.35+Math.random()*.45,ph:Math.random()*6,h:Math.floor(Math.random()*360),w:WORDS[Math.floor(Math.random()*WORDS.length)]});
+}
+function gReset(){
+  gbubs=[];grips=[];gparts=[];gspawn=0;
+  if(gmode==='bub')for(let i=0;i<6;i++)gAddBub(true);
+  $('glead').textContent=GM[gmode].t;
+  $('gcount').textContent=gmode==='bub'&&gpop?'ปล่อยไปแล้ว '+gpop+' ฟอง':'';
+}
+function drawGModes(){
+  $('gmodes').innerHTML='';
+  Object.keys(GM).forEach(k=>{
+    const b=document.createElement('button');
+    b.className='chip';b.textContent=GM[k].n;b.setAttribute('aria-pressed',k===gmode);
+    b.onclick=()=>{gmode=k;drawGModes();gReset()};
+    $('gmodes').appendChild(b);
+  });
+}
+function gameStart(){
+  drawGModes();gResize();
+  const cs=getComputedStyle(document.documentElement);
+  ['accent','text','surface'].forEach(k=>gcol[k]=cs.getPropertyValue('--'+k).trim());
+  const rt=document.documentElement.dataset.theme;
+  gcol.l=82;
+  gpop=0;gReset();glast=performance.now();
+  cancelAnimationFrame(graf);graf=requestAnimationFrame(gLoop);
+}
+function stopGame(){cancelAnimationFrame(graf);graf=null}
+function gRip(x,y,snd){
+  grips.push({x:x,y:y,r:4,a:.9});
+  if(snd){const sc=[392,440,523.25,587.33,659.25,783.99,880];gtone(sc[Math.min(6,Math.floor(x/gW*7))],1.6,.09)}
+}
+function gTap(x,y){
+  if(gmode==='rip'){gRip(x,y,true);return}
+  for(let i=gbubs.length-1;i>=0;i--){
+    const b=gbubs[i];
+    if(Math.hypot(x-b.x,y-b.y)<b.r){
+      gbubs.splice(i,1);gpop++;
+      for(let j=0;j<10;j++){const a=j/10*6.283,s=(.6+Math.random()*.8)*2.2;gparts.push({x:b.x,y:b.y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,l:1,h:b.h})}
+      gtone(500+Math.random()*300,.15,.08);
+      $('gcount').textContent='ปล่อยไปแล้ว '+gpop+' ฟอง'+(gpop>=10?' ใจเบาขึ้นบ้างไหม':'');
+      break;
+    }
+  }
+}
+function gLoop(now){
+  const dt=Math.min(3,(now-glast)/16.7);glast=now;
+  const c=gcx;c.clearRect(0,0,gW,gH);
+  if(gmode==='bub'){
+    gspawn-=dt;
+    if(gspawn<=0&&gbubs.length<12){gAddBub(false);gspawn=30+Math.random()*40}
+    for(let i=gbubs.length-1;i>=0;i--){
+      const b=gbubs[i];b.y-=b.v*dt;b.x+=Math.sin(now/900+b.ph)*.4*dt;
+      if(b.y<-b.r){gbubs.splice(i,1);continue}
+      c.globalAlpha=.75;c.fillStyle='hsl('+b.h+' 70% '+gcol.l+'%)';c.beginPath();c.arc(b.x,b.y,b.r,0,6.283);c.fill();
+      c.globalAlpha=.9;c.strokeStyle='hsl('+b.h+' 60% '+(gcol.l-18)+'%)';c.lineWidth=2;c.stroke();
+      c.globalAlpha=.5;c.fillStyle='#fff';c.beginPath();c.arc(b.x-b.r*.4,b.y-b.r*.45,b.r*.14,0,6.283);c.fill();
+      c.globalAlpha=.9;c.fillStyle=gcol.text;
+      let fs=14;c.font=fs+'px "Noto Sans Thai",sans-serif';const w=c.measureText(b.w).width;
+      if(w>b.r*1.7){fs=Math.max(9,14*b.r*1.7/w);c.font=fs+'px "Noto Sans Thai",sans-serif'}
+      c.textAlign='center';c.textBaseline='middle';c.fillText(b.w,b.x,b.y);
+    }
+  }else{
+    gauto-=dt;
+    if(gauto<=0){gRip(Math.random()*gW,Math.random()*gH,false);gauto=120+Math.random()*120}
+    for(let i=grips.length-1;i>=0;i--){
+      const p=grips[i];p.r+=1.3*dt;p.a-=.006*dt;
+      if(p.a<=0){grips.splice(i,1);continue}
+      c.strokeStyle=gcol.accent;c.lineWidth=2;
+      c.globalAlpha=p.a;c.beginPath();c.arc(p.x,p.y,p.r,0,6.283);c.stroke();
+      c.globalAlpha=p.a*.6;c.beginPath();c.arc(p.x,p.y,p.r*.7,0,6.283);c.stroke();
+    }
+  }
+  for(let i=gparts.length-1;i>=0;i--){
+    const p=gparts[i];p.x+=p.vx*dt;p.y+=p.vy*dt;p.l-=.03*dt;
+    if(p.l<=0){gparts.splice(i,1);continue}
+    c.globalAlpha=p.l;c.fillStyle='hsl('+p.h+' 70% '+(gcol.l-12)+'%)';c.beginPath();c.arc(p.x,p.y,3,0,6.283);c.fill();
+  }
+  c.globalAlpha=1;
+  graf=requestAnimationFrame(gLoop);
+}
+$('gcv').addEventListener('pointerdown',e=>{const r=e.currentTarget.getBoundingClientRect();gTap(e.clientX-r.left,e.clientY-r.top)});
+$('gcv').addEventListener('pointermove',e=>{
+  if(gmode!=='rip'||!e.buttons||performance.now()-gmv<110)return;
+  gmv=performance.now();const r=e.currentTarget.getBoundingClientRect();gTap(e.clientX-r.left,e.clientY-r.top);
+});
+$('gsnd').onclick=()=>{gsndOn=!gsndOn;$('gsnd').textContent=gsndOn?'🔈 เสียงเปิด':'🔇 เสียงปิด'};
+window.addEventListener('resize',()=>{if(graf)gResize()});
+
+/* ---------- Quotes & Tasks ---------- */
+const QS=[
+  ['วันนี้ไม่ต้องสมบูรณ์แบบ แค่ผ่านไปได้ทีละช่วงก็เก่งมากแล้ว','' ],
+  ['ความรู้สึกเหนื่อยไม่ได้แปลว่าคุณอ่อนแอ แต่แปลว่าคุณพยายามมามาก','' ],
+  ['พายุไม่ได้อยู่ตลอดไป และคุณเคยผ่านวันที่ยากมาแล้วหลายวัน','' ],
+  ['พักสักนิดไม่ใช่การยอมแพ้ แต่คือการเก็บแรงไว้เดินต่อ','' ],
+  ['ใจดีกับตัวเองเหมือนที่ใจดีกับคนที่คุณรัก','' ],
+  ['ไม่ต้องตอบทุกคำถามวันนี้ ขอแค่หายใจและอยู่กับตรงนี้ก็พอ','' ],
+  ['ก้าวเล็ก ๆ ก็ยังเป็นก้าวที่พาคุณไปข้างหน้า','' ],
+  ['คุณมีสิทธิ์ที่จะรู้สึกแบบนี้ และความรู้สึกนี้จะผ่านไปเอง','' ],
+  ['ขอบคุณตัวเองที่ยังพยายามมาถึงวันนี้','' ],
+  ['ทุกลมหายใจคือโอกาสเริ่มต้นใหม่เล็ก ๆ','' ]
+];
+QS.push(...[
+'คุณไม่ต้องแข็งแรงตลอดเวลา การได้พักก็เป็นความกล้าอย่างหนึ่ง',
+'วันที่รู้สึกแย่ ไม่ได้ลบวันดี ๆ ที่ผ่านมาของคุณไปเลย',
+'ปล่อยให้ตัวเองช้าลงบ้างก็ได้ ไม่มีใครแข่งกับคุณอยู่',
+'แค่ตื่นขึ้นมาและยังลองต่อ ก็นับว่าเก่งแล้วในวันนี้',
+'อารมณ์ที่หนักอึ้งเหมือนเมฆ มันลอยมาแล้วก็ลอยผ่านไปได้',
+'คุณเป็นคนสำคัญ แม้วันนี้จะไม่รู้สึกแบบนั้นก็ตาม',
+'ไม่เป็นไรเลยที่จะขอความช่วยเหลือ นั่นคือการดูแลตัวเอง',
+'เรื่องที่คุณแบกอยู่ วางลงสักครู่ได้นะ มันจะรอตอนที่ใจพร้อม',
+'ค่อย ๆ เป็นค่อย ๆ ไป ใจก็ต้องการเวลาเหมือนแผลที่กำลังสมาน',
+'ไม่ต้องรีบหายดี หายใจไปทีละครั้งก็พอ',
+'คุณทำดีที่สุดเท่าที่แรงในวันนี้มี และนั่นเพียงพอแล้ว',
+'ความผิดพลาดไม่ได้บอกว่าคุณเป็นใคร มันแค่บอกว่าคุณกำลังเรียนรู้',
+'ลองวางมือบนอก แล้วบอกตัวเองว่า ฉันอยู่ตรงนี้นะ',
+'บางวันแค่ผ่านไปได้ก็คือชัยชนะของวันนั้นแล้ว',
+'ใจที่เหนื่อยต้องการความอ่อนโยน ไม่ใช่คำตำหนิ',
+'คุณไม่ต้องพิสูจน์อะไรกับใครในวันนี้',
+'ความเศร้าไม่ได้แปลว่าคุณทำอะไรผิด มันแปลว่าคุณมีหัวใจ',
+'น้ำตาเป็นอีกทางหนึ่งที่ใจใช้ระบายความหนักออกไป',
+'เมื่อรู้สึกท่วมท้น ลองเลือกสิ่งที่ทำได้ตอนนี้แค่หนึ่งอย่าง แล้วทำแค่สิ่งนั้น',
+'คุณเคยผ่านวันที่ยากมาได้ ครั้งนี้ก็มีแรงในตัวคุณเหมือนกัน',
+'ไม่ต้องเปรียบเทียบชีวิตกับใคร จังหวะของคุณมีความหมายในแบบของมัน',
+'วันนี้ถ้าทำได้แค่นี้ ก็ขอให้ภูมิใจกับแค่นี้',
+'ความกังวลมักพูดดังกว่าความจริง ลองหายใจลึก ๆ แล้วฟังตัวเองอีกครั้ง',
+'สิ่งที่คุณรู้สึกตอนนี้ ไม่ได้อยู่ตลอดไป แม้มันจะดูเหมือนอย่างนั้น',
+'ขอบคุณหัวใจดวงนี้ที่ยังทำงานให้คุณทุกวัน',
+'คุณไม่ได้ล้มเหลว คุณกำลังเหนื่อยเท่านั้นเอง',
+'พักสายตา พักใจ พักตัว แล้วค่อยกลับมาใหม่ได้เสมอ',
+'อนุญาตให้ตัวเองมีวันที่ไม่ไหวบ้าง ทุกคนก็มีเหมือนกัน',
+'ลองพูดกับตัวเองเหมือนพูดกับเพื่อนสนิท คำพูดคงอ่อนโยนขึ้นเยอะ',
+'ความพยายามของคุณมีค่า แม้ยังไม่มีใครมองเห็น',
+'เรื่องเล็ก ๆ ที่ทำให้ยิ้มได้ มีค่ากว่าที่คิด ลองมองหาสักอย่างวันนี้',
+'ใจคุณไม่ได้พังหรอก มันแค่ต้องการที่พักสักหน่อย',
+'ไม่ต้องรู้ทุกคำตอบ แค่รู้ว่าก้าวถัดไปคืออะไรก็พอ',
+'พรุ่งนี้ยังไม่เกิดขึ้น วันนี้ขอแค่ดูแลตัวเองก็พอ',
+'คุณมีสิทธิ์ปฏิเสธสิ่งที่เกินกำลัง',
+'ความเงียบสักช่วงไม่ใช่ความโดดเดี่ยวเสมอไป บางทีมันคือที่พักของใจ',
+'มีคนยินดีที่คุณยังอยู่ตรงนี้ แม้คุณจะไม่เห็นก็ตาม',
+'ค่อย ๆ ผ่อนไหล่ลง คลายกราม แล้วหายใจออกยาว ๆ',
+'แสงเล็ก ๆ ก็ทำให้ห้องมืดไม่มืดสนิท คุณก็มีแสงของคุณเหมือนกัน',
+'ไม่มีใครทำได้ทุกอย่างในวันเดียว รวมถึงคุณด้วย',
+'เมื่อคืนอาจยาก แต่เช้านี้คุณยังมีโอกาสเริ่มใหม่เสมอ',
+'สิ่งที่คุณผ่านมาทำให้เข้าใจคนอื่นได้ลึกขึ้น และนั่นคือความอ่อนโยนที่หายาก',
+'คุณไม่ได้เป็นภาระ คุณเป็นมนุษย์ที่ต้องการการดูแลเหมือนทุกคน',
+'ลองดื่มน้ำสักแก้ว แล้วบอกตัวเองว่า เก่งมากที่ดูแลตัวเอง',
+'ความรู้สึกไม่ใช่ข้อเท็จจริงเสมอไป มันเป็นคลื่นที่ผ่านมา แล้วก็ผ่านไป',
+'ถ้าวันนี้ยังไม่ดี ไม่ได้แปลว่าพรุ่งนี้จะไม่ดี',
+'ไม่เป็นไรที่ยังไม่เจอคำตอบ ระหว่างทางก็มีความหมายของมัน',
+'คุณเติบโตมามากกว่าที่คิด ลองย้อนมองดูสักครั้ง',
+'ขอให้ใจได้พักอย่างที่มันควรได้ในวันนี้',
+'คุณไม่ต้องทำให้ทุกคนพอใจ ขอแค่ไม่ทิ้งตัวเองไว้ข้างหลัง',
+'แค่ได้หยุดหายใจลึก ๆ ตอนนี้ คุณก็กำลังดูแลตัวเองอยู่แล้ว',
+'บางครั้งความอ่อนโยนที่ดีที่สุด คือการยอมให้ตัวเองหยุดเสียที',
+'คุณเป็นมากกว่างาน มากกว่าผลลัพธ์ และมากกว่าความผิดพลาดใด ๆ',
+'ใจที่กลัวคือใจที่ยังห่วงแหนบางอย่างอยู่ ลองใจดีกับมันหน่อยนะ',
+'วันนี้ถ้ายังไม่มีแรงฮึด ขอแค่ไม่ทิ้งตัวเองก็พอ',
+'มีหลายอย่างที่ควบคุมไม่ได้ แต่คุณเลือกวิธีดูแลใจตัวเองได้เสมอ',
+'คุณมีสิทธิ์รู้สึกดีขึ้นอย่างช้า ๆ ไม่ต้องเร่ง',
+'ถ้าวันนี้หนักมาก ขอให้รู้ว่ามีหลายคนที่เคยหนักแบบนี้ และผ่านมาได้ทีละวัน',
+'เรื่องที่ผ่านมาแล้วเราเปลี่ยนไม่ได้ แต่ลมหายใจตอนนี้ยังเป็นของเรา',
+'ให้เวลากับตัวเอง เหมือนที่คุณให้เวลากับคนที่คุณห่วง',
+'คุณไม่ต้องเข้มแข็งคนเดียว การบอกใครสักคนไม่ได้ทำให้คุณอ่อนแอ',
+'ใจที่เหนื่อยล้าไม่ได้ไร้ค่า มันแค่ต้องการพื้นที่ปลอดภัย',
+'ลองมองรอบตัวสักครู่ แล้วหาสิ่งที่ทำให้รู้สึกปลอดภัยสักหนึ่งอย่าง',
+'แม้วันนี้จะไม่สดใส แต่คุณยังมีค่าเหมือนเดิม',
+'ขอบคุณความอดทนของคุณ มันพาคุณมาไกลกว่าที่คิด',
+'ปล่อยวางไม่ได้แปลว่าไม่แคร์ แต่คือการให้ใจได้พักบ้าง',
+'ถ้าคิดมากจนหนัก ลองเขียนทิ้งไว้ ให้กระดาษช่วยถือแทนสักพัก',
+'ทุกวันที่คุณยังลองต่อ คือหลักฐานว่าคุณมีแรงในแบบที่อาจไม่รู้ตัว',
+'คุณอาจเคยทำให้ใครสักคนรู้สึกดีขึ้น โดยที่คุณไม่รู้ตัวเลย',
+'ค่อย ๆ คลายมือที่กำแน่น แล้วรู้สึกถึงความอุ่นของมือตัวเอง',
+'วันที่ยากที่สุด มักเป็นวันที่ใจต้องการการพักมากที่สุดเช่นกัน',
+'ไม่เป็นไรเลยถ้าวันนี้ทำได้น้อย น้อยก็ยังดีกว่าฝืนจนหมดแรง',
+'ท้องฟ้ายังเปลี่ยนสีได้ทุกวัน ใจของเราก็เปลี่ยนได้เหมือนกัน',
+'สิ่งที่ยากเมื่อวาน อาจเบาลงนิดหนึ่งในวันนี้ ลองสังเกตดูนะ',
+'คุณมีค่ามากพอ เพราะคุณเป็นคุณ ไม่ต้องทำอะไรเพิ่ม',
+'หายใจเข้า ให้ใจกว้างขึ้นนิดหนึ่ง หายใจออก ปล่อยความตึงไปนิดหนึ่ง',
+'ถ้าทำไม่ได้ทั้งหมด ลองเริ่มจากส่วนที่เล็กที่สุด แค่นั้นก็นับ',
+'ความเข้มแข็งบางทีก็เงียบ ๆ เหมือนการตื่นมาทำต่อในวันที่ไม่อยากทำ',
+'ขอให้วันนี้มีช่วงเวลาเล็ก ๆ ที่ใจสงบ แม้เพียงสองสามนาทีก็ตาม',
+'ไม่มีใครต้องผ่านเรื่องหนัก ๆ คนเดียว ลองนึกถึงคนที่คุณไว้ใจสักคนนะ',
+'การที่คุณยังใส่ใจ คือสัญญาณว่าหัวใจคุณยังอ่อนโยน',
+'ปล่อยให้ตัวเองได้พัก โดยไม่ต้องรู้สึกผิด',
+'ทุกการเริ่มต้นใหม่ไม่ต้องยิ่งใหญ่ แค่เริ่มลองเบา ๆ ก็พอ',
+'ฟังเสียงรอบตัวสักครู่ แล้วให้ใจกลับมาอยู่ตรงนี้',
+'วันนี้ไม่ต้องดีที่สุด แค่ดีพอสำหรับตัวเองก็เพียงพอ',
+'ความรักที่คุณมีให้คนอื่น คุณก็ควรได้รับจากตัวเองเช่นกัน',
+'ไม่ต้องรอให้ทุกอย่างลงตัว ถึงจะอนุญาตให้ตัวเองมีความสุขเล็ก ๆ',
+'ถ้าเหนื่อยก็นั่งลง ถ้าใจหนักก็พูดออกมา โลกไม่ได้พังเพราะคุณพักหรอก',
+'การอยู่กับความรู้สึกตัวเองเป็นเรื่องยากมาก และคุณกำลังทำมันอยู่',
+'ขอให้คืนนี้ใจได้นอนหลับสบาย และพรุ่งนี้ได้เจอสิ่งดี ๆ เล็ก ๆ'
+].map(t=>[t,'']));
+QS.push(...(["วันนี้ถ้าเหนื่อยมาก ก็พักก่อน ไม่จำเป็นต้องเก่งไปทุกเรื่องในวันเดียว", "บางวันการพาตัวเองผ่านไปจนถึงเวลานอน ก็ถือว่าเราทำได้ดีมากแล้ว", "ไม่ต้องใช้ทุกนาทีให้เกิดประโยชน์ บางช่วงเวลามีไว้ให้เราได้หายใจเฉย ๆ ก็พอ", "ถ้าวันนี้ทำอะไรไม่ไหว อย่าเพิ่งรีบตำหนิตัวเอง ลองถามตัวเองก่อนว่าเหนื่อยมานานแค่ไหนแล้ว", "ชีวิตไม่ใช่การแข่งขันที่เราต้องวิ่งให้เร็วที่สุดทุกวัน", "การหยุดพักไม่ได้ทำให้เราเป็นคนขี้แพ้ แต่มันช่วยให้เรามีแรงสำหรับวันต่อไป", "ไม่เป็นไรเลยถ้าวันนี้จะทำได้ไม่เท่าเมื่อวาน เราไม่ได้มีพลังเท่ากันในทุกวัน", "ไม่จำเป็นต้องมีผลงานให้ใครเห็นตลอดเวลา แค่ได้ดูแลตัวเองก็เป็นเรื่องสำคัญแล้ว", "ถ้ารู้สึกว่าทุกอย่างหนักไปหมด ลองวางบางเรื่องลงก่อน แล้วค่อยกลับมาจัดการทีละอย่าง", "วันนี้ไม่ต้องเป็นวันที่ดีที่สุด ขอแค่เป็นวันที่เราใจดีกับตัวเองมากขึ้นก็พอ", "คนที่เข้มแข็งก็มีวันที่อ่อนแอได้ ไม่จำเป็นต้องรับมือกับทุกอย่างด้วยตัวเองเสมอไป", "ไม่ต้องยิ้มเพื่อให้ทุกคนสบายใจ ในวันที่เราไม่ไหว เราก็มีสิทธิ์ยอมรับความรู้สึกของตัวเอง", "การขอความช่วยเหลือไม่ได้ทำให้เรามีคุณค่าน้อยลง", "ไม่จำเป็นต้องเป็นคนที่ทุกคนพึ่งพาได้ตลอดเวลา เราเองก็สมควรมีใครสักคนให้พึ่งพาเหมือนกัน", "ไม่ต้องเก็บทุกความรู้สึกไว้คนเดียว เพียงเพราะกลัวว่าคนอื่นจะมองว่าเราอ่อนแอ", "เราไม่จำเป็นต้องพิสูจน์ความอดทนด้วยการทนอยู่กับทุกสิ่ง", "บางครั้งความกล้าหาญอาจไม่ใช่การเดินหน้าต่อ แต่คือการยอมรับว่าตัวเองต้องการพัก", "การยอมรับว่าเหนื่อยไม่ได้แปลว่าเรายอมแพ้ให้กับชีวิต", "ไม่ต้องเป็นคนที่จัดการทุกอย่างได้ดีเสมอไป เราก็เป็นมนุษย์คนหนึ่งที่มีขีดจำกัด", "ต่อให้วันนี้ไม่มีใครเห็นความพยายามของเรา ก็ไม่ได้หมายความว่าความพยายามนั้นไม่มีค่า", "ถ้าทั้งชีวิตดูเหมือนมีเรื่องให้จัดการไม่จบ ลองเริ่มจากเรื่องที่อยู่ตรงหน้าก่อนก็ได้", "เราไม่จำเป็นต้องแก้ปัญหาของวันพรุ่งนี้ให้เสร็จภายในวันนี้", "บางเรื่องอาจยังไม่มีคำตอบในตอนนี้ และเราก็ไม่จำเป็นต้องหาคำตอบให้ได้ทันที", "อย่าเพิ่งตัดสินทั้งชีวิตจากช่วงเวลาที่กำลังยากลำบาก", "แม้จะเปลี่ยนทุกอย่างไม่ได้ในวันนี้ เรายังเลือกได้ว่าจะดูแลตัวเองอย่างไรในระหว่างทาง", "เรื่องราวที่หนักหนาอาจกินพื้นที่ในใจมาก แต่ไม่ได้หมายความว่าชีวิตเราจะมีเพียงเรื่องนั้นตลอดไป", "ค่อย ๆ แก้ไปทีละปัญหา ไม่ต้องแบกทุกอย่างมาคิดพร้อมกัน", "บางวันชีวิตก็ไม่ได้ต้องการแผนการที่สมบูรณ์แบบ แค่ก้าวเล็ก ๆ ที่พอทำไหวก็เพียงพอ", "ไม่ต้องรีบหาทางออกในวันที่ใจยังวุ่นวาย ให้เวลาตัวเองได้ตั้งหลักก่อน", "ถึงตอนนี้จะยังมองไม่เห็นว่าทุกอย่างจะดีขึ้นอย่างไร ก็ไม่ได้แปลว่าจะไม่มีทางออกอื่นอีก", "งานเป็นส่วนหนึ่งของชีวิต ไม่ใช่ทั้งหมดของชีวิต และคุณค่าของเราก็ไม่ได้ขึ้นอยู่กับงานเพียงอย่างเดียว", "วันที่งานไม่เป็นอย่างหวังไม่ได้แปลว่าเรากลายเป็นคนที่ไม่มีความสามารถ", "ไม่จำเป็นต้องตอบทุกข้อความทันที จนไม่มีเวลาให้ตัวเองได้พักหายใจ", "การทำงานเต็มที่เป็นเรื่องดี แต่การรู้ว่าเมื่อไรควรหยุดก็สำคัญไม่แพ้กัน", "ไม่ต้องเปรียบเทียบความสำเร็จของตัวเองกับคนที่กำลังอยู่คนละช่วงชีวิต", "งานที่ยังไม่เสร็จไม่ได้เป็นหลักฐานว่าเราไม่มีความรับผิดชอบ บางครั้งงานก็มีมากกว่ากำลังที่เรามี", "ไม่จำเป็นต้องแบกความคาดหวังของทุกคนไว้บนบ่าของตัวเอง", "ความผิดพลาดในที่ทำงานเป็นสิ่งที่แก้ไขและเรียนรู้ได้ ไม่จำเป็นต้องกลายเป็นคำตัดสินตัวเอง", "หลังจากทุ่มเทให้หน้าที่มาทั้งวัน เราก็สมควรมีช่วงเวลาที่ไม่ต้องพิสูจน์อะไรกับใคร", "ขอให้มีวันที่เราได้เลิกงานแล้ววางเรื่องงานลงได้จริง ๆ ไม่ต้องพากลับไปเหนื่อยต่อในใจ", "ความพยายามที่ยังไม่เห็นผลไม่ได้แปลว่าสิ่งที่ทำมาทั้งหมดสูญเปล่า", "เราอาจยังไปไม่ถึงเป้าหมาย แต่ไม่ได้หมายความว่าเราไม่ได้ก้าวไปข้างหน้าเลย", "บางเส้นทางใช้เวลานานกว่าที่คิดไม่ได้แปลว่าเราเลือกเดินผิดเสมอไป", "ไม่ต้องรีบเรียกตัวเองว่าล้มเหลว เพียงเพราะผลลัพธ์ยังไม่เป็นอย่างที่หวัง", "สิ่งที่ยังทำไม่ได้ในวันนี้ อาจเป็นสิ่งที่เราค่อย ๆ เรียนรู้ได้ในวันข้างหน้า", "อย่าให้ความสำเร็จที่ยังมาไม่ถึง ทำให้เรามองข้ามความกล้าที่ลงมือเริ่มต้น", "บางครั้งความก้าวหน้าอาจเป็นเพียงการที่เรารับมือกับเรื่องเดิมได้ดีขึ้นกว่าเมื่อก่อน", "เราไม่จำเป็นต้องเห็นผลลัพธ์ทันที ถึงจะอนุญาตให้ตัวเองภูมิใจกับความพยายามได้", "การเปลี่ยนแผนไม่ใช่เรื่องน่าอาย หากเส้นทางเดิมกำลังทำให้เราเหนื่อยเกินไป", "ต่อให้ต้องเริ่มต้นใหม่ เราก็ยังมีบทเรียนจากทุกครั้งที่ผ่านมาเป็นทุนของตัวเอง", "ไม่จำเป็นต้องสมบูรณ์แบบถึงจะเป็นคนที่มีคุณค่า", "ลองพูดกับตัวเองให้อ่อนโยนเหมือนที่เราพูดกับคนที่เรารักบ้าง", "เราไม่จำเป็นต้องทำทุกอย่างได้ดีตั้งแต่ครั้งแรก เพื่อพิสูจน์ว่าเรามีความสามารถ", "การมีข้อบกพร่องไม่ได้ทำให้ความดีของเราหายไป", "อย่าลงโทษตัวเองซ้ำ ๆ กับเรื่องที่เราได้เรียนรู้จากมันแล้ว", "เราอนุญาตให้คนอื่นผิดพลาดได้ ก็อย่าลืมเผื่อพื้นที่นั้นไว้ให้ตัวเองด้วย", "ไม่ต้องเป็นตัวเองในเวอร์ชันที่ดีที่สุดตลอดเวลา แค่เป็นตัวเองในแบบที่กำลังเรียนรู้ก็ได้", "การพักไม่ใช่รางวัลที่ต้องรอให้ทำทุกอย่างเสร็จก่อน แต่เป็นสิ่งที่เราต้องการระหว่างทางด้วย", "อย่าเอามาตรฐานที่สูงที่สุดของตัวเองมาใช้ตัดสินทุกวันในชีวิต", "บางครั้งสิ่งที่เราต้องการมากที่สุด ไม่ใช่คำวิจารณ์เพิ่มเติม แต่เป็นโอกาสให้ตัวเองได้ลองอีกครั้ง", "ต่อให้วันนี้ไม่มีใครเข้าใจทุกอย่างที่เรากำลังเผชิญ ความรู้สึกของเราก็ยังมีความหมาย", "การอยู่คนเดียวในบางช่วงเวลาไม่ได้หมายความว่าเราจะต้องโดดเดี่ยวตลอดไป", "ไม่ต้องทำเป็นไม่เป็นไร เพียงเพราะไม่รู้ว่าจะอธิบายความรู้สึกให้ใครฟังอย่างไร", "ถ้ายังไม่พร้อมเล่าเรื่องหนัก ๆ ให้ใครฟัง ก็เริ่มจากการยอมรับกับตัวเองก่อนก็ได้", "เราไม่จำเป็นต้องเป็นคนที่น่าสนใจหรือมีประโยชน์ตลอดเวลา ถึงจะสมควรได้รับความใส่ใจ", "บางครั้งการมีใครสักคนรับฟังโดยไม่รีบตัดสิน ก็ช่วยให้วันที่ยากลำบากเบาลงได้", "อย่าคิดว่าตัวเองไม่มีใคร เพียงเพราะคนที่เราอยากให้เข้าใจยังไม่เข้าใจเราในตอนนี้", "เราสมควรมีพื้นที่ที่ไม่ต้องฝืนยิ้ม ไม่ต้องแกล้งเข้มแข็ง และไม่ต้องอธิบายทุกความรู้สึก", "หากวันนี้ใจเงียบเหงา ลองเริ่มต้นดูแลตัวเองด้วยสิ่งเล็ก ๆ ที่ทำให้รู้สึกปลอดภัย", "ไม่ต้องรีบทำให้ความเหงาหายไปทั้งหมด แค่เปิดโอกาสให้ตัวเองได้เชื่อมโยงกับใครสักคนทีละนิดก็พอ", "ชีวิตของเราไม่จำเป็นต้องเดินตามตารางเวลาของใคร", "การที่คนอื่นไปถึงเป้าหมายก่อนไม่ได้ทำให้โอกาสของเราลดลง", "เราไม่จำเป็นต้องมีคำตอบเรื่องอนาคตครบทุกข้อในวัยเดียวกับคนอื่น", "เส้นทางที่ช้ากว่าอาจทำให้เราได้รู้จักตัวเองในแบบที่ไม่เคยรู้มาก่อน", "อย่าใช้ภาพความสำเร็จของคนอื่นมาตัดสินชีวิตทั้งหมดที่เราไม่ได้เปิดเผยให้ใครเห็น", "บางคนกำลังวิ่ง บางคนกำลังเดิน และบางคนกำลังพัก ทุกคนต่างมีจังหวะชีวิตของตัวเอง", "ไม่ต้องรีบไปให้ถึงที่หมายจนลืมถามตัวเองว่า เส้นทางที่กำลังเดินนั้นยังเป็นสิ่งที่ต้องการอยู่หรือไม่", "การเริ่มต้นช้ากว่าคนอื่นไม่ได้แปลว่าเราจะไม่มีวันไปถึงจุดที่หวัง", "ชีวิตไม่จำเป็นต้องก้าวหน้าให้คนอื่นมองเห็นทุกวัน ถึงมีความหมาย", "ลองเปลี่ยนจากคำถามว่า \"ทำไมเรายังไปไม่ถึงไหน\" เป็น \"ตอนนี้เราต้องการอะไรเพื่อก้าวต่อไป\"", "ก่อนจะตัดสินใจว่าตัวเองทำไม่ได้อีกแล้ว ลองให้โอกาสตัวเองได้พักจากความเหนื่อยก่อน", "เราไม่จำเป็นต้องตัดสินใจเรื่องสำคัญในวันที่อารมณ์และร่างกายอ่อนล้าที่สุด", "หากเดินต่อในแบบเดิมไม่ไหว เราอาจลองเปลี่ยนวิธีแทนการบังคับตัวเองให้ทนต่อไป", "การถอยออกมาดูสถานการณ์ให้ชัดขึ้นไม่ได้หมายความว่าเราสูญเสียความกล้า", "บางครั้งการไม่ฝืนตัวเองเกินขีดจำกัด คือการดูแลสิ่งที่สำคัญที่สุดในชีวิต", "อย่าเพิ่งปิดโอกาสของวันพรุ่งนี้ เพียงเพราะวันนี้เต็มไปด้วยเรื่องที่ทำให้ผิดหวัง", "เราไม่จำเป็นต้องเห็นทางทั้งหมด ขอแค่รู้ว่าก้าวต่อไปที่พอทำไหวคืออะไร", "หากเป้าหมายเดิมทำให้เราเจ็บปวดมากเกินไป การทบทวนเป้าหมายก็เป็นทางเลือกหนึ่ง", "ความเหนื่อยในวันนี้เป็นสิ่งที่ควรรับฟัง ไม่ใช่สิ่งที่ต้องเอาชนะให้ได้ทุกครั้ง", "ไม่ต้องสัญญากับตัวเองว่าจะสู้ไหวตลอดไป แค่ดูแลตัวเองให้ผ่านช่วงเวลานี้ไปทีละวันก็พอ", "วันนี้อาจมีหลายอย่างที่ยังทำไม่สำเร็จ แต่เราก็สมควรได้พักอย่างสบายใจ", "ขอบคุณตัวเองที่พยายามรับมือกับเรื่องต่าง ๆ แม้บางช่วงจะไม่ง่ายเลย", "ก่อนนอนคืนนี้ ลองวางความผิดพลาดของวันนี้ไว้ก่อน แล้วให้โอกาสตัวเองเริ่มต้นใหม่ในวันพรุ่งนี้", "ไม่ต้องทบทวนทุกเรื่องที่ทำได้ไม่ดีจนกลายเป็นเหตุผลให้ตัวเองนอนไม่หลับ", "วันนี้เราอาจดูแลคนอื่นมามากแล้ว อย่าลืมแบ่งความใส่ใจบางส่วนกลับมาให้ตัวเอง", "ขอให้คืนนี้เป็นช่วงเวลาที่เราไม่ต้องแข่งขัน ไม่ต้องเปรียบเทียบ และไม่ต้องพิสูจน์อะไร", "บางเรื่องยังไม่คลี่คลายก็ไม่เป็นไร เราสามารถพักได้แม้ชีวิตจะยังคงมีคำถาม", "ให้วันนี้จบลงโดยไม่ต้องพาตัวเองกลับไปแบกทุกเรื่องที่เกิดขึ้นอีกครั้ง", "พรุ่งนี้อาจยังมีเรื่องให้จัดการ แต่คืนนี้เราไม่จำเป็นต้องแก้ทุกอย่างให้เสร็จก่อนหลับ", "ขอให้เราค่อย ๆ เติบโตโดยไม่ลืมว่า ระหว่างทางก็มีสิทธิ์เหนื่อย มีสิทธิ์พัก และมีสิทธิ์ได้รับความอ่อนโยนเหมือนกัน", "ไม่เป็นไรถ้าวันนี้ยังไม่มีแรงใจ แค่ยังอยู่ตรงนี้ก็เป็นเรื่องที่ควรขอบคุณแล้ว", "การดูแลตัวเองไม่จำเป็นต้องเป็นเรื่องใหญ่ บางทีแค่ดื่มน้ำอุ่นสักแก้วก็นับเป็นความใส่ใจแล้ว", "ความรู้สึกที่ไม่สบายใจไม่ได้ผิดอะไร มันแค่กำลังบอกว่าเราต้องการการดูแล", "เราไม่ต้องเป็นที่รักของทุกคน แค่เป็นคนที่ไม่ทิ้งตัวเองก็เพียงพอ", "ถ้าใจยังไม่พร้อมจะมองไปข้างหน้า ก็อนุญาตให้มองแค่ชั่วโมงนี้ก่อนได้", "บางทีสิ่งที่ใจต้องการไม่ใช่คำแนะนำ แต่คือพื้นที่ปลอดภัยให้ได้พักสักพัก", "ไม่ต้องรีบหายดีตามเวลาที่ใครกำหนด ใจของเรามีจังหวะของมันเอง", "วันที่รู้สึกว่าตัวเองไม่ได้เรื่อง ลองนึกถึงสิ่งเล็ก ๆ ที่ทำสำเร็จไปแล้วในวันนี้ดูนะ", "การร้องไห้ไม่ได้แปลว่าแพ้ บางครั้งมันคือวิธีที่ใจปล่อยความหนักออกมา", "ไม่ต้องเข้มแข็งตลอดเวลา การอ่อนโยนกับตัวเองก็เป็นความเข้มแข็งอีกแบบ", "ลองหายใจเข้าลึก ๆ ช้า ๆ แล้วบอกตัวเองว่า ตอนนี้ฉันปลอดภัยพอที่จะพักได้", "เรามีสิทธิ์พูดว่า วันนี้ขอไม่ไหวนะ โดยไม่ต้องรู้สึกผิดกับใคร", "ความเหนื่อยที่เรารู้สึก ไม่ได้ทำให้ความพยายามที่ผ่านมาหายไปไหน", "ขอให้วันนี้มีอะไรเล็ก ๆ ที่ทำให้ยิ้มได้จริง ๆ ไม่ต้องฝืนเลยสักนิด", "เมื่อไม่แน่ใจว่าควรทำอะไรต่อ การนั่งเงียบ ๆ แล้วฟังใจตัวเองก็เป็นคำตอบที่ดีเหมือนกัน", "คุณไม่ได้ช้าเกินไป และไม่ได้สายเกินไปสำหรับสิ่งที่ใจยังอยากลอง", "ความอ่อนล้าเป็นสัญญาณจากร่างกายและหัวใจ ไม่ใช่ข้อบกพร่องของตัวเรา", "ขอให้ได้ผ่านวันนี้ด้วยความอ่อนโยน ทั้งจากคนรอบข้าง และจากตัวเราเอง"]).map(t=>[t,'']));
+(function(){const seen=new Set();for(let i=QS.length-1;i>=0;i--){if(seen.has(QS[i][0]))QS.splice(i,1);else seen.add(QS[i][0])}})();
+const QKEY='calm_quote_bag_v2';
+let qbag=[],qlast=-1;
+try{const s=JSON.parse(localStorage.getItem(QKEY)||'null');if(s&&s.n===QS.length&&Array.isArray(s.b))qbag=s.b.filter(i=>Number.isInteger(i)&&i>=0&&i<QS.length)}catch(e){}
+function nextQ(){
+  if(!qbag.length){
+    qbag=QS.map((_,i)=>i);
+    for(let i=qbag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[qbag[i],qbag[j]]=[qbag[j],qbag[i]]}
+    if(qbag.length>1&&qbag[qbag.length-1]===qlast){[qbag[0],qbag[qbag.length-1]]=[qbag[qbag.length-1],qbag[0]]}
+  }
+  const n=qbag.pop();qlast=n;
+  try{localStorage.setItem(QKEY,JSON.stringify({n:QS.length,b:qbag}))}catch(e){}
+  return n;
+}
+const TS=[
+  'ดื่มน้ำเปล่าช้า ๆ 1 แก้ว แล้วรู้สึกถึงความเย็นของน้ำ',
+  'ยืดคอ ไหล่ และแขน ช้า ๆ ข้างละ 30 วินาที',
+  'มองออกไปไกล ๆ นอกหน้าต่าง แล้วหาสีเขียวให้ได้ 3 อย่าง',
+  'พิมพ์ขอบคุณตัวเอง 1 ข้อความสั้น ๆ ลงในโน้ต',
+  'ลุกเดินช้า ๆ ไปมาในห้อง สังเกตความรู้สึกที่ฝ่าเท้า',
+  'ส่งข้อความทักคนที่คุณคิดถึง 1 คน',
+  'จัดโต๊ะหรือพื้นที่รอบตัวให้เรียบร้อย 1 จุด',
+  'หลับตา แล้วนึกถึงสถานที่ที่ทำให้สบายใจ 2 นาที'
+];
+let lq=-1,lt=-1,tm=null;
+function pick(a,l){let n;do{n=Math.floor(Math.random()*a.length)}while(n===l&&a.length>1);return n}
+const CH=[['🐻','น้องหมีใจดี'],['🐰','น้องกระต่ายขี้ฟัง'],['🐱','น้องแมวชิล'],['🐥','น้องลูกเจี๊ยบสู้ ๆ'],['🐼','น้องแพนด้าใจเย็น'],['🦊','น้องจิ้งจอกอบอุ่น']];
+let lc=0;
+function deal(){
+  const box=$('qcards');box.innerHTML='';box.classList.remove('picked');
+  $('qhint').textContent='แตะการ์ดใบนี้ แล้วดูว่าข้อความอะไรรออยู่';
+  const n=nextQ();
+  const ch=CH[Math.floor(Math.random()*CH.length)];
+  const c=document.createElement('button');
+  c.className='fcard';c.setAttribute('aria-label','การ์ดข้อความกำลังใจ แตะเพื่อเปิด');
+  c.innerHTML='<span class="fin"><span class="ff fb">💌</span><span class="ff fr"><i>'+ch[0]+'</i><span>'+QS[n][0]+'</span></span></span>';
+  c.onclick=()=>{
+    if(box.classList.contains('picked'))return;
+    box.classList.add('picked');c.classList.add('open');
+    $('qhint').textContent=ch[1]+' มีข้อความมาฝาก';
+  };
+  box.appendChild(c);
+}
+$('qbtn').onclick=deal;
+deal();
+$('tbtn').onclick=()=>{
+  stopTask();lt=pick(TS,lt);
+  $('ttext').textContent=TS[lt];
+  $('tstart').hidden=false;$('tstart').textContent='เริ่มจับเวลา';
+};
+function fmt(s){return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+function stopTask(){clearInterval(tm);tm=null;$('ttime').hidden=true;$('tstart').textContent='เริ่มจับเวลา'}
+$('tstart').onclick=()=>{
+  if(tm){stopTask();return}
+  let s=120;$('ttime').hidden=false;$('ttime').textContent=fmt(s);
+  $('tstart').textContent='หยุด';
+  tm=setInterval(()=>{
+    s--;$('ttime').textContent=fmt(s);
+    if(s<=0){stopTask();$('ttext').textContent='ครบ 2 นาทีแล้ว ขอบคุณที่ดูแลตัวเองนะ'}
+  },1000);
+};
+</script>
+</body>
+</html>
